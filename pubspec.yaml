@@ -14,6 +14,7 @@ dependencies:
   go_router: ^6.2.0
   google_fonts: ^4.0.3
   formz: ^0.6.0
+  flutter_dotenv: ^5.1.0
 
 dev_dependencies:
   flutter_lints: ^2.0.0
@@ -27,3 +28,4 @@ flutter:
     - assets/loaders/
     - assets/images/
     - google_fonts/montserrat_alternates/
+    - .env
