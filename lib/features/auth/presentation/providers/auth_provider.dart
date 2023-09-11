@@ -4,17 +4,26 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:teslo_shop/features/auth/domain/auth_repository.dart';
 import 'package:teslo_shop/features/auth/infrastructure/infrastrucuture.dart';
+import 'package:teslo_shop/features/shared/infrastructure/services/key_value_storage_service.dart';
+import 'package:teslo_shop/features/shared/infrastructure/services/key_value_storage_service_impl.dart';
 
 import '../../domain/auth_entity.dart';
 
 final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
   final authRepository = AuthRepositotyImpl();
-  return AuthNotifier(authRepository: authRepository);
+  final keyValueStorageService = KeyValueStorageServiceImpl();
+
+  return AuthNotifier(
+      authRepository: authRepository,
+      keyValueStorageService: keyValueStorageService);
 });
 
 class AuthNotifier extends StateNotifier<AuthState> {
   final AuthRepository authRepository;
-  AuthNotifier({required this.authRepository}) : super(AuthState());
+  final KeyValueStorageService keyValueStorageService;
+  AuthNotifier(
+      {required this.authRepository, required this.keyValueStorageService})
+      : super(AuthState());
 
   Future<void> loginUser(
       {required String email, required String password}) async {
@@ -38,6 +47,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
   void chechAuthStatus() async {}
 
   Future<void> logout([String? errorMessage]) async {
+    await keyValueStorageService.removeKey("token");
     //TODO: limpiar token
     state = state.copyWith(
         authStatus: AuthStatus.notAuthenticated,
@@ -47,8 +57,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   Future<void> _setLoggerUser(User user) async {
     //TODo: necesito guardar el token en el dipositivo
+    await keyValueStorageService.setKeyValue("token", user.token);
     state = state.copyWith(
-        user: user, errorMessage: "", authStatus: AuthStatus.authenticated);
+      user: user,
+      errorMessage: "",
+      authStatus: AuthStatus.authenticated,
+    );
   }
 }
 
