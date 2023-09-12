@@ -23,12 +23,15 @@ class AuthNotifier extends StateNotifier<AuthState> {
   final KeyValueStorageService keyValueStorageService;
   AuthNotifier(
       {required this.authRepository, required this.keyValueStorageService})
-      : super(AuthState());
+      : super(AuthState()) {
+    //Cuando se crea la primera instancia reviso el jwt
+    chechAuthStatus();
+  }
 
   Future<void> loginUser(
       {required String email, required String password}) async {
     //TODO borrar de aqui
-    //await Future.delayed(const Duration(milliseconds: 800));
+    await Future.delayed(const Duration(milliseconds: 800));
     try {
       final user = await authRepository.login(email, password);
       _setLoggerUser(user);
@@ -44,7 +47,16 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   void registerUser(String email, String password, String fullName) async {}
 
-  void chechAuthStatus() async {}
+  void chechAuthStatus() async {
+    final token = await keyValueStorageService.getValue<String>("token");
+    if (token == null) return logout();
+    try {
+      final user = await authRepository.checkAuthStatus(token);
+      _setLoggerUser(user);
+    } catch (e) {
+      logout();
+    }
+  }
 
   Future<void> logout([String? errorMessage]) async {
     await keyValueStorageService.removeKey("token");
