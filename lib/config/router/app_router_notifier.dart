@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:teslo_shop/features/auth/presentation/providers/auth_provider.dart';
+import 'package:teslo_shop/src/auth/presentation/providers/auth_provider.dart';
 
 final goRouterNotifierProvider = Provider((ref) {
   final authNotifier = ref.read(authProvider.notifier);

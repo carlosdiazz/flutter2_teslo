@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:teslo_shop/features/auth/auth.dart';
-import 'package:teslo_shop/features/auth/presentation/providers/auth_provider.dart';
-import 'package:teslo_shop/features/products/products.dart';
+import 'package:teslo_shop/src/auth/auth.dart';
+import 'package:teslo_shop/src/auth/presentation/providers/auth_provider.dart';
+import 'package:teslo_shop/src/products/products.dart';
 
 import 'app_router_notifier.dart';
 
