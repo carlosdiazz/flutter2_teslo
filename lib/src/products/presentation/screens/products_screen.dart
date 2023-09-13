@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:go_router/go_router.dart';
 import 'package:teslo_shop/src/products/presentation/presentation.dart';
+import 'package:teslo_shop/src/products/presentation/widgets/products_card.dart';
 import 'package:teslo_shop/src/shared/shared.dart';
 
 class ProductsScreen extends StatelessWidget {
@@ -36,23 +39,53 @@ class _ProductsView extends ConsumerStatefulWidget {
 }
 
 class _ProductsViewState extends ConsumerState<_ProductsView> {
-  final ScrollController scrollCOntroller = ScrollController();
+  final ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     //TODO infiniteScroll Pending
-    ref.read(productsProvider.notifier).loadNextPage();
+    //ref.read(productsProvider.notifier).loadNextPage();
+    scrollController.addListener(() {
+      if ((scrollController.position.pixels + 400) >=
+          scrollController.position.maxScrollExtent) {
+        print("PETIICON NUEVAAA");
+        ref.read(productsProvider.notifier).loadNextPage();
+      }
+    });
+
+    //400
   }
 
   @override
   void dispose() {
-    scrollCOntroller.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return const Center(child: Text('Eres genial!'));
+    final productsState = ref.watch(productsProvider);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: MasonryGridView.count(
+        physics: const BouncingScrollPhysics(),
+        controller: scrollController,
+        crossAxisCount: 2,
+        mainAxisSpacing: 20,
+        crossAxisSpacing: 35,
+        itemCount: productsState.products.length,
+        itemBuilder: (context, index) {
+          final product = productsState.products[index];
+          return GestureDetector(
+            child: ProductCard(
+              product: product,
+            ),
+            onTap: () => context.push("/product/${product.id}"),
+          );
+        },
+      ),
+    );
   }
 }

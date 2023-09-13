@@ -20,20 +20,23 @@ class ProductsNotifier extends StateNotifier<ProductsState> {
   }
 
   Future loadNextPage() async {
-    if (state.isLoading || state.isLastPage) return;
+    if (state.isLoading) return;
+    if (state.isLastPage) return;
 
     state = state.copyWith(isLoading: true);
 
+    print("Peticion");
     final products = await productsRepository.getProductsByPage(
         limit: state.limit, offest: state.offest);
     if (products.isEmpty) {
       state.copyWith(isLastPage: true, isLoading: false);
+    } else {
+      state = state.copyWith(
+          isLastPage: false,
+          isLoading: false,
+          offest: state.offest + 10,
+          products: [...state.products, ...products]);
     }
-    state = state.copyWith(
-        isLastPage: false,
-        isLoading: false,
-        offest: state.offest + 10,
-        products: [...state.products, ...products]);
   }
 }
 
