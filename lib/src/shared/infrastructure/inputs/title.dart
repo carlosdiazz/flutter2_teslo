@@ -1,14 +1,10 @@
 import 'package:formz/formz.dart';
 
 // Define input validation errors
-enum TitleError { empty, format }
+enum TitleError { empty }
 
 // Extend FormzInput and provide the input type and error type.
 class Title extends FormzInput<String, TitleError> {
-  static final RegExp emailRegExp = RegExp(
-    r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-  );
-
   // Call super.pure to represent an unmodified form input.
   const Title.pure() : super.pure('');
 
@@ -19,9 +15,6 @@ class Title extends FormzInput<String, TitleError> {
     if (isValid || isPure) return null;
 
     if (displayError == TitleError.empty) return 'El campo es requerido';
-    if (displayError == TitleError.format) {
-      return 'No tiene formato de correo electrónico';
-    }
 
     return null;
   }
@@ -30,7 +23,6 @@ class Title extends FormzInput<String, TitleError> {
   @override
   TitleError? validator(String value) {
     if (value.isEmpty || value.trim().isEmpty) return TitleError.empty;
-    if (!emailRegExp.hasMatch(value)) return TitleError.format;
 
     return null;
   }
