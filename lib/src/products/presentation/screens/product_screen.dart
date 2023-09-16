@@ -27,7 +27,12 @@ class ProductScreen extends ConsumerWidget {
       //  child: Text(productState.product?.title ?? "Cargando..."),
       //),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          if (productState.product == null) return;
+          ref
+              .read(productFormProvider(productState.product!).notifier)
+              .onFormSubmit();
+        },
         child: const Icon(Icons.save_as_outlined),
       ),
     );
