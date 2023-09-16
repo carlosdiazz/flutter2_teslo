@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
 import 'package:teslo_shop/config/constants/environment.dart';
 import 'package:teslo_shop/src/products/domain/domain.dart';
+import 'package:teslo_shop/src/products/presentation/presentation.dart';
 import 'package:teslo_shop/src/shared/infrastructure/inputs/inputs.dart';
 
 //AutoDispose que se limpia cuando no lo este usando
@@ -9,15 +10,20 @@ import 'package:teslo_shop/src/shared/infrastructure/inputs/inputs.dart';
 final productFormProvider = StateNotifierProvider.autoDispose
     .family<ProductFormNotifier, ProductFormState, Product>((ref, product) {
   //TODO: createupdateCallBack
+  //final createUpdateCallBack =
+  //    ref.watch(productsRepositoryProvider).createUpdateProduct;
+  final createUpdateCallBack =
+      ref.watch(productsProvider.notifier).createOrUpdateProduct;
 
   return ProductFormNotifier(
-    product: product,
-    //TODOonSubmitCallback:
-  );
+      product: product,
+      //TODOonSubmitCallback:
+      onSubmitCallback: createUpdateCallBack);
 });
 
 class ProductFormNotifier extends StateNotifier<ProductFormState> {
-  final void Function(Map<String, dynamic> productsLike)? onSubmitCallback;
+  final Future<bool> Function(Map<String, dynamic> productsLike)?
+      onSubmitCallback;
 
   ProductFormNotifier({
     this.onSubmitCallback,
@@ -100,7 +106,7 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
     if (!state.isFormValid) return false;
 
     //TODO
-    //if (onSubmitCallback == null) return false;
+    if (onSubmitCallback == null) return false;
     final productLike = {
       "id": state.id,
       "title": state.title.value,
@@ -117,8 +123,11 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
               image.replaceAll("${Enviroment.apiUrl}/files/product/", ""))
           .toList()
     };
-    return true;
-    //TODO: lla,ar on submit callback
+    try {
+      return onSubmitCallback!(productLike);
+    } catch (e) {
+      return false;
+    }
   }
 
   //Validar que todos los campos sean tocados

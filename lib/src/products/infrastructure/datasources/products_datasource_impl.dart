@@ -18,6 +18,7 @@ class ProductsDatasourceImpl extends ProductsDataSource {
       {required Map<String, dynamic> productLike}) async {
     try {
       final String? productId = productLike["id"];
+      print(productId);
       final String method = (productId == null) ? "POST" : "PATCH";
       final String url = (productId == null) ? "/post" : "/products/$productId";
       productLike.remove("id");
