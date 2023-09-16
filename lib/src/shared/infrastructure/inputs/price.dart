@@ -26,7 +26,7 @@ class Price extends FormzInput<double, PriceError> {
     if (value.toString().isEmpty || value.toString().trim().isEmpty) {
       return PriceError.empty;
     }
-    if (value > 5) return PriceError.value;
+    if (value < 5) return PriceError.value;
 
     return null;
   }

@@ -4,6 +4,18 @@ import 'package:teslo_shop/config/constants/environment.dart';
 import 'package:teslo_shop/src/products/domain/domain.dart';
 import 'package:teslo_shop/src/shared/infrastructure/inputs/inputs.dart';
 
+//AutoDispose que se limpia cuando no lo este usando
+//Family para mandar el tipo de dato, que me servira para crear el Provider
+final productFormProvider = StateNotifierProvider.autoDispose
+    .family<ProductFormNotifier, ProductFormState, Product>((ref, product) {
+  //TODO: createupdateCallBack
+
+  return ProductFormNotifier(
+    product: product,
+    //TODOonSubmitCallback:
+  );
+});
+
 class ProductFormNotifier extends StateNotifier<ProductFormState> {
   final void Function(Map<String, dynamic> productsLike)? onSubmitCallback;
 
@@ -24,7 +36,7 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
         ));
 
   void onTitleChanged(String value) {
-    state.copyWith(
+    state = state.copyWith(
         title: Title.dirty(value),
         isFormValid: Formz.validate([
           Title.dirty(value),
@@ -35,7 +47,7 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
   }
 
   void onSlugChanged(String value) {
-    state.copyWith(
+    state = state.copyWith(
         slug: Slug.dirty(value),
         isFormValid: Formz.validate([
           Title.dirty(state.title.value),
@@ -46,7 +58,7 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
   }
 
   void onPriceChanged(double value) {
-    state.copyWith(
+    state = state.copyWith(
         price: Price.dirty(value),
         isFormValid: Formz.validate([
           Title.dirty(state.title.value),
@@ -57,7 +69,7 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
   }
 
   void onStockChanged(int value) {
-    state.copyWith(
+    state = state.copyWith(
         inStock: Stock.dirty(value),
         isFormValid: Formz.validate([
           Title.dirty(state.title.value),
@@ -67,7 +79,7 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
         ]));
   }
 
-  void onSizeChamged(List<String> sizes) {
+  void onSizeChanged(List<String> sizes) {
     state = state.copyWith(sizes: sizes);
   }
 

@@ -26,7 +26,7 @@ class Stock extends FormzInput<int, StockError> {
     if (value.toString().isEmpty || value.toString().trim().isEmpty) {
       return StockError.empty;
     }
-    if (value > 2) return StockError.value;
+    if (value < 2) return StockError.value;
 
     return null;
   }
