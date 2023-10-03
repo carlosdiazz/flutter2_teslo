@@ -22,12 +22,13 @@ class ProductsDatasourceImpl extends ProductsDataSource {
       final String method = (productId == null) ? "POST" : "PATCH";
       final String url = (productId == null) ? "/post" : "/products/$productId";
       productLike.remove("id");
-
+      print("por aca");
       final response = await dio.request(url,
           data: productLike, options: Options(method: method));
       final Product product = ProductMapper.jsonToEntity(response.data);
       return product;
     } catch (e) {
+      print(e);
       throw Exception(e);
     }
   }
